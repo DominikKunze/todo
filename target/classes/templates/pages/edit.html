@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo: Editieren</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/menu.html">
+        Menu couldn't load!
+    </div>
+    <form action="/api/edit" method="post">
+        <div class="form-group">
+            <label for="title">Titel</label>
+            <input type="text" class="form-control" name="title" id="title" placeholder="Titel" th:value="${todo.title}">
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" id="status" name="status">
+                <option th:switch="${todo.status}" th:value="${todo.status}">
+                    <small th:case="0">Neu <span class="glyphicon glyphicon-asterisk"></span></small>
+                    <small th:case="1">In Bearbeitung <span class="glyphicon glyphicon-dashboard"></span></small>
+                    <small th:case="2">Erledigt <span class="glyphicon glyphicon-ok"></span></small>
+                    <small th:case="3">Problem ist aufgetreten <span class="glyphicon glyphicon-alert"></span></small>
+                </option>
+
+                <option value="0">Neu <span class="glyphicon glyphicon-asterisk"></span></option>
+                <option value="1">In Bearbeitung <span class="glyphicon glyphicon-dashboard"></span></option>
+                <option value="2">Erledigt <span class="glyphicon glyphicon-ok"></span></option>
+                <option value="3">Problem ist aufgetreten <span class="glyphicon glyphicon-alert"></span></option>
+            </select>
+        </div>
+        <input type="hidden" name="id" th:value="${todo.id}">
+        <div class="form-group">
+            <label for="inhalt">Inhalt</label>
+            <textarea class="form-control" name="inhalt" id="inhalt" placeholder="Inhalt" th:text="${todo.inhalt}"></textarea>
+        </div>
+        <button class="btn btn-success" value="editieren" name="editieren">Editieren</button>
+    </form>
+</div>
+</body>
+</html>

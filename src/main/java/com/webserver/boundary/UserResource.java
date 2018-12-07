@@ -1,5 +1,6 @@
 package com.webserver.boundary;
 
+import com.webserver.control.HashToSha512;
 import com.webserver.model.User;
 import com.webserver.services.data.TaskRepository;
 import com.webserver.services.data.UserRepository;
@@ -25,28 +26,16 @@ public class UserResource {
 
     @RequestMapping("/login")
     public String userLogin(@RequestParam("username") String username, @RequestParam("password") String password, Model model){
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update("todo".getBytes(StandardCharsets.UTF_8));
-            byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++){
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            generatedPassword = sb.toString();
-        }
-        catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }
-        //System.out.println("Sha512: " + generatedPassword);
+        HashToSha512 hashToSha512 = new HashToSha512();
+        String hashPassword = hashToSha512.hash(password);
+        //System.out.println("Sha512: " + hashPassword);
 
         boolean found = false;
         Iterable<User> allUser = userRepository.findAll();
         for(User u : allUser){
             if(u.getName().equalsIgnoreCase(username)){
                 found = true;
-                if(u.passwordEquils(generatedPassword)){
+                if(u.passwordEquils(hashPassword)){
                     model.addAttribute("allToDos", taskRepository.findAll());
                     model.addAttribute("success","Erfolgreich eingeloggt!");
                     return "pages/main.html";
