@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,10 +27,13 @@ public class UserResource {
     TaskRepository taskRepository;
 
     @RequestMapping("/login")
-    public String userLogin(@RequestParam("username") String username, @RequestParam("password") String password, Model model){
+    public String userLogin(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpServletResponse httpServletResponse){
         HashToSha512 hashToSha512 = new HashToSha512();
         String hashPassword = hashToSha512.hash(password);
         //System.out.println("Sha512: " + hashPassword);
+
+        Cookie cookie = new Cookie("Bla","Test");
+        httpServletResponse.addCookie(cookie);
 
         boolean found = false;
         Iterable<User> allUser = userRepository.findAll();
